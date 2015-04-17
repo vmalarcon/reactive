@@ -7,7 +7,7 @@ import Arbitrary._
 import org.scalacheck.Gen._
 import Prop._
 
-abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
+abstract class QuickCheckHeap extends Properties("Heap") with IntHeap with HeapListHelper {
 
   property("min1") = forAll { a: Int =>
     val h = insert(a, empty)
@@ -87,15 +87,15 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     compareWithList(h, ls)
   }
 
-  def validate(p: Int, heap: H): Boolean = {
-    if (isEmpty(heap)) return true
-    else findMin(heap) >= p && validate(findMin(heap), deleteMin(heap))
+  def validate(prev: Int, heap: H): Boolean = (prev, heap) match {
+    case (p, h) if isEmpty(h) => true
+    case (p, h) => findMin(h) >= p && validate(findMin(h), deleteMin(h))
   }
 
-  def heapEquals(h: H, i: H): Boolean = {
-    if (isEmpty(h) && isEmpty(i)) return true
-    else if (isEmpty(h) || isEmpty(i)) return false
-    else findMin(h) == findMin(i) && heapEquals(deleteMin(h), deleteMin(i))
+  def heapEquals(h1: H, h2: H): Boolean = (h1, h2) match {
+    case (h, i) if isEmpty(h) && isEmpty(i) => true
+    case (h, i) if isEmpty(h) || isEmpty(i) => false
+    case (h, i) => findMin(h) == findMin(i) && heapEquals(deleteMin(h), deleteMin(i))
   }
 
   def heapSize(h: H): Int = {
@@ -107,10 +107,10 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     case x::xs => insert(x, fillHeap(xs))
   }
 
-  def compareWithList(h: H, l: List[Int]): Boolean = {
-    if (isEmpty(h) && l.isEmpty) true
-    else if (isEmpty(h) || l.isEmpty) false
-    else findMin(h) == l.head && compareWithList(deleteMin(h), l.tail)
+  def compareWithList(heap: H, list: List[Int]): Boolean = (heap, list) match {
+    case (h, l) if isEmpty(h) && l.isEmpty => true
+    case (h, l) if isEmpty(h) || l.isEmpty => false
+    case (h, l) => findMin(h) == l.head && compareWithList(deleteMin(h), l.tail)
   }
 
   lazy val genHeap: Gen[H] = for {

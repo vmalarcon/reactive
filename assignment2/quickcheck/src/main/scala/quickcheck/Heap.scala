@@ -25,6 +25,16 @@ trait Heap {
   def deleteMin(h: H): H // a heap resulting from deleting a minimum of h
 }
 
+trait HeapListHelper extends Heap {
+  def toList(h: H): List[A] = h match {
+    case h if isEmpty(h) => Nil
+    case h => findMin(h) :: toList(deleteMin(h))
+  }
+  def fromList(l: List[A]) = (l foldRight empty) (insert(_,_))
+
+  def drain(h: H): List[A] = Stream.iterate(h)(deleteMin).takeWhile(x => !isEmpty(x)).map(findMin).toList
+}
+
 // Figure 3, page 7
 trait BinomialHeap extends Heap {
 
