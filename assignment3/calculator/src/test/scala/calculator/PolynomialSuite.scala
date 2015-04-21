@@ -92,4 +92,25 @@ class PolynomialSuite extends FunSuite with ShouldMatchers {
     assert(-2.0 === sol().tail.head)
   }
 
+  test("test two solutions - special case") {
+    val a = Var(1.0)
+    val b = Var(4.0)
+    val c = Var(1.0)
+
+    val delta = Polynomial.computeDelta(a, b, c)
+
+    assert(delta() === 12.0)
+    println(delta())
+
+    val sol = Polynomial.computeSolutions(a, b, c, delta)
+
+    assert(2 === sol().size)
+
+    println(sol().head)
+    println(sol().tail.head)
+
+    assert(-0.1980358747915814 === sol().head)
+    //assert(2.0 === sol().tail.head)
+  }
+
 }
