@@ -109,8 +109,20 @@ class PolynomialSuite extends FunSuite with ShouldMatchers {
     println(sol().head)
     println(sol().tail.head)
 
-    assert(-0.1980358747915814 === sol().head)
-    //assert(2.0 === sol().tail.head)
+    assert(-3.732050807568877 === sol().head)
+    assert(-0.2679491924311228 === sol().tail.head)
+
+    a() = 0.990420709
+    b() = 4.572004784
+    c() = 0.866577707
+
+    assert(17.470121717036747 == delta())
+
+    println(sol().head)
+    println(sol().tail.head)
+
+    assert(-4.418189247106155 === sol().head)
+    assert(-0.19803569897380308 === sol().tail.head)
   }
 
 }
