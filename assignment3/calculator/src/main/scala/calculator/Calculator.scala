@@ -15,19 +15,15 @@ object Calculator {
   }
 
   def eval(expr: Expr, references: Map[String, Signal[Expr]]): Double = {
-    try {
       expr match {
         case Literal(l) => l
-        case Ref(n) if references.contains(n) => eval(references(n)(), references)
+        case Ref(n) if references.contains(n) => eval(references(n)(), references - n)
         case Ref(n) if !references.contains(n) => Double.NaN
         case Plus(a, b) => eval(a, references) + eval(b, references)
         case Minus(a, b) => eval(a, references) - eval(b, references)
         case Times(a, b) => eval(a, references) * eval(b, references)
         case Divide(a, b) => eval(a, references) / eval(b, references)
       }
-    } catch {
-      case e: StackOverflowError => Double.NaN
-    }
   }
 
   /** Get the Expr for a referenced variables.
