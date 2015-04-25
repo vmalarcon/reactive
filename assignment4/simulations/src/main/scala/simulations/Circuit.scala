@@ -77,7 +77,8 @@ abstract class CircuitSimulator extends Simulator {
   }
 
   def demux(in: Wire, c: List[Wire], out: List[Wire]) {
-    ???
+    val pairs = c zip out
+    pairs.foreach { case (i: Wire, o: Wire) => andGate(in, i, o) }
   }
 
 }

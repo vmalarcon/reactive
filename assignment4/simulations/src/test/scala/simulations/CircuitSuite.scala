@@ -93,4 +93,26 @@ class CircuitSuite extends CircuitSimulator with FunSuiteLike {
 
     assert(out.getSignal === false, "or 5")
   }
+
+  test("demux test") {
+    val in = new Wire
+    val lstC = List.fill(10) { new Wire }
+    val lstOut = List.fill(10) { new Wire }
+    demux(in, lstC, lstOut)
+
+    lstC.foreach(_.setSignal(true))
+    run
+
+    assert(lstOut.forall(_.getSignal == false))
+
+    in.setSignal(true)
+    run
+
+    assert(lstOut.forall(_.getSignal == true))
+
+    lstC.splitAt(5)._1.foreach(_.setSignal(false))
+    run
+
+    assert((lstOut.size - 5) == lstOut.count(_.getSignal == true))
+  }
 }
